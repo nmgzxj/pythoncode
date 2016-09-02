@@ -1,3 +1,4 @@
+#!/usr/bin/env python3 
 import urllib.request
 import http.client
 import bs4
