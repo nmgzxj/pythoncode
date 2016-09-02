@@ -6,8 +6,8 @@ import sys
 import importlib
 importlib.reload(sys)
 
-page_num=10
-url='http://tieba.baidu.com/f?ie=utf-8&kw=%E6%B2%A7%E5%B7%9E'
+page_num=10 #×¥È¡Ò³Êı
+url='http://tieba.baidu.com/f?ie=utf-8&kw=%E6%B2%A7%E5%B7%9E' #ÍøÖ·
 
 
 page_num=page_num+1
