@@ -4,7 +4,7 @@ import requests
 session=requests.Session()
 login_url="http://yqms.istarshine.com/Login/doLogin"
 
-params={'loginflag':'1','userid':'联付科技','password':'lfkj_jaja95178'}
+params={'loginflag':'1','userid':'qmsk','password':'china95178'}
 s=session.post(login_url,data=params,headers=dict(referer=login_url))
 #print(s.cookies.get_dict())
 
