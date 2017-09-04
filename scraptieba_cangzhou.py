@@ -24,7 +24,7 @@ def GetEveryPage(url,file):
                 print(a.get_text()+',http://tieba.baidu.com'+a.attrs['href']+'\r\n')
 
 url='http://tieba.baidu.com/f?ie=utf-8&kw=python&pn='
-file_tieba=open('pythonba.csv','w+',encoding='utf-8')
+file_tieba=open('../cangzhouba.csv','w+',encoding='utf-8')
 for i in range(1,10):
     url_everypage=url+str((i-1)*50)
     print('Processing page:'+url+str(i)+str('/16......'))
