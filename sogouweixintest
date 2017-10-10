@@ -1,0 +1,106 @@
+# -*- coding:utf-8 -*-
+# from tkinter import *  第一步
+# 下载微信的前10个文章
+import os, getpass, time
+import Tkinter
+from ScrolledText import ScrolledText
+import urllib2, requests, re, threading, time
+import chardet
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+root = Tkinter.Tk()
+root.title('The first Python GUI')
+text = ScrolledText(root, font=('微软雅黑', 10))
+text.grid()  # 布局
+varl = Tkinter.StringVar()
+
+class Tool:
+    removeImg = re.compile('<img.*?>| {1,7}|&nbsp;') #去除Img标签
+    removeAddr = re.compile('<a.*?>| </a>') #去除链接
+    replaceLine = re.compile('<br>|<div>|</div>|<p>|</p>')
+
+    removeTag = re.compile('<.*?>')
+
+    @classmethod
+    def replace(cls,x):
+        x = re.sub(cls.removeImg,'',x)
+        x = re.sub(cls.removeAddr,'',x)
+        x = re.sub(cls.replaceLine,'',x)
+        x = re.sub(cls.removeTag,'',x)
+
+        return x.strip()
+
+
+url_name = []
+a = 1 #页数
+def get():
+    global a
+    hd = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36','Referer':'http://weixin.sogou.com/'}
+    url = 'http://weixin.sogou.com/pcindex/pc/pc_0/'+str(a)+'.html'
+    url = 'http://weixin.sogou.com/weixin?query=中秋&type=2&page='+str(a)+'&ie=utf8'
+    varl.set('已经获取到第%s页的文章。'%str(a))
+#    html = requests.get(url, headers = hd).text
+    # print html
+
+    req = urllib2.Request(url)
+    content = urllib2.urlopen(req).read()
+    typeEncode = sys.getfilesystemencoding()
+    infoencode = chardet.detect(content).get('encoding', 'utf-8')
+    html = content.decode(infoencode, 'ignore').encode(typeEncode)
+    #
+    #
+    # print info
+    # print html #.decode('gbk').encode('utf-8')
+    url_content = re.compile(r'(<h3>.*?</h3>)', re.S)
+    url_contents = re.findall(url_content, html)
+    # print url_contents
+    for i in url_contents:
+        url_reg = r'href="(.*?)"'
+
+        url_items = re.findall(url_reg, i)
+
+        # print i
+        # print url_items
+
+        if url_items:
+            name_reg = r'">(.*?)</a>'
+            name_items = re.findall(name_reg, i)
+            # print name_items
+            # print url_items
+            for x, y in zip(name_items, url_items):
+                x = Tool.replace(x)
+                url_name.append([x, y])
+               # print x, y
+    return url_name
+
+id = 1
+
+
+def write():
+    global id
+    while id < 10:
+        url_name = get()
+        for i in url_name:
+            # urllib.urlretrieve(i[1],'/users/zhangxianjin/Downloads/weixin/%s.mp4'% (i[0])) #下载.decode('utf-8').encode('gbk')
+            text.insert(Tkinter.END, str(id)+'.'+i[0]+'\n'+i[1]+'\n')
+            url_name.pop(0)
+            id += 1
+    varl.set('爬虫：文章下载完毕。')
+
+def start():
+    th = threading.Thread(target=write)
+    th.start()
+
+b = get()
+
+button = Tkinter.Button(root, text='开始爬取', font=('微软雅黑', 10), command = start)
+button.grid()
+
+
+label = Tkinter.Label(root, font=('微软雅黑', 10), fg='blue', textvariable = varl)
+label.grid()
+varl.set('爬虫已准备...')
+root.mainloop()  # 进入主事件循环
+
