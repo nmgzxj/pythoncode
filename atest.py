@@ -232,7 +232,8 @@ def mainLoop():
 def main():
     print u"正在初始化，请稍等"
     forumBigList = getJsonFromUrl(baseUrl + "/getForumList")
-   # forumBigList = [{"forums":[{"name":"test", "id":"1"},{"name":"test1", "id":"2"}]}]
+    # forumBigList = [{"forums":[{"name":"test", "id":"1"},{"name":"test1", "id":"2"}]}]
+    print forumBigList
     for forums in forumBigList:
         for forum in forums:
             forumList.append((forum[0].name, forum[0].id))

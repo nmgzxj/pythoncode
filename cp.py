@@ -8,6 +8,6 @@ session=requests.Session()
 #s=session.post(login_url,data=params,headers=dict(referer=login_url))
 #print(s.cookies.get_dict())
 
-url="http://www.cp.com.cn"
+url="http://www.cb.com.cn"
 s=session.get(url)
 print(s.text)
