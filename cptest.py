@@ -1,19 +1,16 @@
 #coding:utf8
 import requests
-from bs4 import BeautifulSoup
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-session = requests.Session()
-url="http://www.cb.com.cn/xinqiche/"
-#s=session.get(url)
-#print(s.text)
-
+import re
 import urllib2
 import sys
 import chardet
 import time
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+web_name = '中国经营报'
+baseurl = "http://www.cb.com.cn"
+url = baseurl + "/fangdichan/"
 
 req = urllib2.Request(url)
 content = urllib2.urlopen(req).read()
@@ -22,7 +19,6 @@ infoencode = chardet.detect(content).get('encoding','utf-8')
 html = content.decode(infoencode,'ignore').encode(typeEncode)
 #print html
 
-web_name = '未设置'
 title = '未设置'
 anthor = '未设置'
 url = '未设置'
@@ -32,45 +28,35 @@ pub_time = '1970-1-1 0:0:0'
 crawl_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 keywords = '未设置'
 description = '未设置'
-root_url = 'http://www.cb.com.cn'
-
 
 def crawl_content(url1):
-    url1 = root_url + url1
-    print '================== '+url1+' ==============================='
     req1 = urllib2.Request(url1)
     content1 = urllib2.urlopen(req1).read()
     html1 = content1.decode(infoencode, 'ignore').encode(typeEncode)
-    text = BeautifulSoup(html1)
-    web_name = '中国经营报'
-    title = text.title
-    anthor = text.findAll('div',{"class":"contentmes auto"})
-    url = url1
-    source = text.findAll('div',{"class":"contentmes auto"})
-    content = text.findAll('div',{"class":"contenttext auto"})
+    return html1
 
+reg = re.compile('<dt><a href="(.*?)" target="_blank" title=".*?">(.*?)</a></dt>')
+regdetail = re.compile('<title>(.*?)</title>.*?<meta name="keywords" content="(.*?)">.*?<meta name="description" content="(.*?)">.*?<div class="contentmes auto">(.*?)<span>(.*?)</span>.*?<i>评论：<a href="#SOHUCS" id="changyan_count_unit">(.*?)</a>',re.S)
+# print html
+contents = re.findall(reg, html)
+# print contents
+for link in contents:
+    url1 = baseurl+link[0]
+    details = re.findall(regdetail, crawl_content(url1))
+    print '================== '+url1+' ==============================='
+    # print details
+    #print details[0][0]
+    # break
     print 'web_name='+web_name
-    print 'title='
-    print text.title
-    print 'anthor='
-    print anthor.decode(infoencode, 'ignore').encode(typeEncode)
-    print 'url='+url
-    print 'source='+source
-    print 'content='+content
-    print 'pub_time='+pub_time
-    print 'crawl_time='+crawl_time
-    print 'keywords='+keywords
-    print 'description='+description
-    return text.title
-
-soup = BeautifulSoup(html)
-print soup.title
-#print soup.dl.dt.a
-for link in soup.findAll('dl',{"class":"listdlr"}):
-#     print(link.get('href'))
-#     print(link.dt.a.get('href'))
-#     print(link.dt.a.string)
-    print(crawl_content(link.dt.a.get('href')))
-
-
+    print 'title='+details[0][0]
+    print 'url='+url1
+    print 'source='+details[0][4]
+    print 'content='+details[0][2]
+    print 'pub_time='+details[0][3].strip()
+    print 'crawl_time='+time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    print 'keywords='+details[0][1]
+    print 'description='+details[0][2]
+    # break
 #print soup.get_text()
+
+
