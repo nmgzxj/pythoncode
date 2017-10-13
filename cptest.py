@@ -29,6 +29,7 @@ crawl_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 keywords = '未设置'
 description = '未设置'
 
+
 def crawl_content(url1):
     req1 = urllib2.Request(url1)
     content1 = urllib2.urlopen(req1).read()
@@ -36,13 +37,15 @@ def crawl_content(url1):
     return html1
 
 reg = re.compile('<dt><a href="(.*?)" target="_blank" title=".*?">(.*?)</a></dt>')
-regdetail = re.compile('<title>(.*?)</title>.*?<meta name="keywords" content="(.*?)">.*?<meta name="description" content="(.*?)">.*?<div class="contentmes auto">(.*?)<span>(.*?)</span>.*?<i>评论：<a href="#SOHUCS" id="changyan_count_unit">(.*?)</a>',re.S)
+regDetail = re.compile('<title>(.*?)</title>.*?<meta name="keywords" content="(.*?)">.*?<meta name="description" '
+                       'content="(.*?)">.*?<div class="contentmes auto">(.*?)<span>(.*?)</span>.*?<i>'
+                       '评论：<a href="#SOHUCS" id="changyan_count_unit">(.*?)</a>',re.S)
 # print html
 contents = re.findall(reg, html)
 # print contents
 for link in contents:
     url1 = baseurl+link[0]
-    details = re.findall(regdetail, crawl_content(url1))
+    details = re.findall(regDetail, crawl_content(url1))
     print '================== '+url1+' ==============================='
     # print details
     #print details[0][0]
