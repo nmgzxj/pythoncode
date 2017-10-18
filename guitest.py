@@ -1,4 +1,5 @@
-# -*- coding:utf8 -*-
+#!/usr/bin/env python
+#  -*- coding:utf8 -*-
 # from tkinter import *  第一步
 # 下载百思不得姐的前10个视频
 import os, getpass, time
@@ -36,7 +37,7 @@ def get():
             #print name_items[0]
             for i,k in zip(name_items, url_items):
                 url_name.append([i,k])
-                print i,k
+               # print i,k
     return url_name
 
 id = 1 #视频个数
