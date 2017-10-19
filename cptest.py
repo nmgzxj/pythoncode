@@ -11,7 +11,7 @@ import Tkinter
 from ScrolledText import ScrolledText
 
 root = Tkinter.Tk()
-root.title('全媒声控数据收集')
+root.title('中国经营报-房地产')
 text = ScrolledText(root, font=('微软雅黑', 10))
 text.grid()  # 布局
 varl = Tkinter.StringVar()
@@ -28,42 +28,30 @@ infoencode = chardet.detect(content).get('encoding','utf-8')
 html = content.decode(infoencode,'ignore').encode(typeEncode)
 #print html
 
-title = '未设置'
-anthor = '未设置'
-url = '未设置'
-source = '未设置'
-content = '未设置'
-pub_time = '1970-1-1 0:0:0'
-crawl_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-keywords = '未设置'
-description = '未设置'
-
-
 def crawl_content(url1):
     req1 = urllib2.Request(url1)
     content1 = urllib2.urlopen(req1).read()
     html1 = content1.decode(infoencode, 'ignore').encode(typeEncode)
     return html1
 
-reg = re.compile('<dt><a href="(.*?)" target="_blank" title=".*?">(.*?)</a></dt>')
-regDetail = re.compile('<title>(.*?)</title>.*?<meta name="keywords" content="(.*?)">.*?<meta name="description" '
-                       'content="(.*?)">.*?<div class="contentmes auto">(.*?)<span>(.*?)</span>.*?<i>'
-                       '评论：<a href="#SOHUCS" id="changyan_count_unit">(.*?)</a>',re.S)
-# print html
-contents = re.findall(reg, html)
-# print contents
+reg = re.compile('<dt><a href="(.*?)" target="_blank" title=".*?">(.*?)</a></dt>', re.S)
+regDetail = re.compile('<title>(.*?)</title>.*?<meta name="keywords" content="(.*?)">.*?<meta name="description" content="(.*?)">.*?<div class="contentmes auto">(.*?)<span>(.*?)</span>.*?<i>.*?<a href="#SOHUCS" id="changyan_count_unit">(.*?)</a>', re.S)
 
+contents = re.findall(reg, html)
+#print contents
 
 def start():
     i = 0
     for link in contents:
+        
         i = i+1
         url1 = baseurl+link[0]
         details = re.findall(regDetail, crawl_content(url1))
         printTxt = '=========== '+str(i)+' ===========\n'
-        # print details
-        # print details[0][0]
-        # break
+        #print url1
+        #print details
+        #print details[0][0]
+        #break
         # print 'web_name='+web_name
         printTxt = printTxt + 'title='+details[0][0]+'\n'
         printTxt = printTxt + 'url='+url1+'\n'
@@ -73,9 +61,10 @@ def start():
         printTxt = printTxt + 'crawl_time='+time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'\n'
         printTxt = printTxt + 'keywords='+details[0][1]+'\n'
         printTxt = printTxt + 'description='+details[0][2]+'\n'
-        text.insert(Tkinter.END, printTxt)
-        # break
-#print soup.get_text()
+
+        text.insert(Tkinter.END, printTxt.decode('gbk'))
+        if i == 10:
+            break
 
 
 button = Tkinter.Button(root, text='开始爬取', font=('微软雅黑', 10), command = start)
@@ -86,3 +75,5 @@ label = Tkinter.Label(root, font=('微软雅黑', 10), fg='blue', textvariable =
 label.grid()
 varl.set('爬虫已准备...')
 root.mainloop()  # 进入主事件循环
+#start()
+#print crawl_content('http://www.sina.com.cn')
