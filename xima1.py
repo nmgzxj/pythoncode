@@ -95,10 +95,10 @@ def get_m4a(url):
         print dic.get("title")
         print dic.get("play_path")
         if os.path.exists('/users/zhangxianjin/Downloads/sound/%s.m4a' % dic.get("title")):
-            print u'%s.m4a已存在，跳过下载。' % dic.get("title")
+            print u'%s.m4a 已存在，跳过下载。' % dic.get("title")
         else:
             urllib.urlretrieve(dic.get("play_path"), '/users/zhangxianjin/Downloads/sound/%s.m4a' % dic.get("title"))
-        urllib.urlretrieve(dic.get("play_path"), '/users/zhangxianjin/Downloads/sound/%s.m4a' % dic.get("title"))
+        # urllib.urlretrieve(dic.get("play_path"), '/users/zhangxianjin/Downloads/sound/%s.m4a' % dic.get("title"))
 
 if __name__ == '__main__':
    # get_m4a("http://www.ximalaya.com/10936615/album/7651313/") #晓说2017
